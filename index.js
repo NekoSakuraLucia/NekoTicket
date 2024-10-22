@@ -1,7 +1,8 @@
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require("discord.js");
-const path = require("path")
-const fs = require("fs")
+const path = require("path");
+const fs = require("fs");
 const { TOKEN } = require("./config.json");
+const chalk = require("chalk");
 
 class NekoTicket {
     constructor() {
@@ -23,7 +24,7 @@ class NekoTicket {
 
         this.commandsToDeploy = [];
 
-        console.log("Loading Commands..");
+        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green('Loading Commands...')}`));
 
         for (const folderOrFile of commandFiles) {
             const fullPath = path.join(commandsPath, folderOrFile);
@@ -36,31 +37,29 @@ class NekoTicket {
                     const command = require(path.join(folderPath, file));
                     this.client.commands.set(command.data.name, command);
                     this.commandsToDeploy.push(command.data.toJSON());
-                    console.log(`Loaded command: ${command.data.name} from /${folderOrFile}/${file}`);  // แสดงชื่อคำสั่งที่โหลดจากโฟลเดอร์
+                    console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green(`Loaded Slash Commands ${command.data.name} from /${folderOrFile}/${file}`)}`));
                 }
             } else {
                 const command = require(fullPath);
                 this.client.commands.set(command.data.name, command);
                 this.commandsToDeploy.push(command.data.toJSON());
-                console.log(`Loaded command: ${command.data.name} from /${folderOrFile}`);  // แสดงชื่อคำสั่งที่โหลดจากไฟล์โดยตรง
+                console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green(`Loaded Commands ${command.data.name} from /${folderOrFile}`)}`));
             }
         }
 
-        console.log('All commands loaded.');
+        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green('All Loading Commands')}`));
     }
 
     async deployCommands() {
         const rest = new REST({ version: '10' }).setToken(TOKEN);
 
         try {
-            console.log('Started refreshing application (/) commands.');
-
             await rest.put(
                 Routes.applicationCommands(this.client.user.id),
                 { body: this.commandsToDeploy },
             );
 
-            console.log('Successfully reloaded application (/) commands.');
+        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Loading All Commands Successfully !`));
         } catch (error) {
             console.error(error);
         }
@@ -68,7 +67,7 @@ class NekoTicket {
 
     setupEventHandlers() {
         this.client.once('ready', async () => {
-            console.log(`Logged in as ${this.client.user.tag}!`);
+            console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Logged in as ${this.client.user.tag}!`));
             await this.deployCommands();
         });
 
