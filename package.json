@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/NekoSakuraLucia/NekoTicket/issues"
   },
-  "homepage": "https://github.com/NekoSakuraLucia/NekoTicket#readme"
+  "homepage": "https://github.com/NekoSakuraLucia/NekoTicket#readme",
+  "dependencies": {
+    "discord.js": "^14.16.3"
+  }
 }
