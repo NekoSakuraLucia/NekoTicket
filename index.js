@@ -15,6 +15,7 @@ class NekoTicket {
         });
         this.client.commands = new Collection()
         this.loadCommands();
+        this.loadEvents();
         this.setupEventHandlers();
     }
 
@@ -46,8 +47,24 @@ class NekoTicket {
                 console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green(`Loaded Commands ${command.data.name} from /${folderOrFile}`)}`));
             }
         }
+    }
 
-        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green('All Loading Commands')}`));
+    loadEvents() {
+        const eventsPath = path.join(__dirname, "events")
+        const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+
+        for (const file of eventFiles) {
+            const event = require(path.join(eventsPath, file));
+            if (event.once) {
+                this.client.once(event.name, (...args) => event.execute(...args, this.client));
+            } else {
+                this.client.on(event.name, (...args) => event.execute(...args, this.client));
+            }
+
+            console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> ${chalk.default.green(`Loaded Events ${event.name}`)}`));
+        }
+
+        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Loading All Events Successfully !`));
     }
 
     async deployCommands() {
@@ -59,7 +76,7 @@ class NekoTicket {
                 { body: this.commandsToDeploy },
             );
 
-        console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Loading All Commands Successfully !`));
+            console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Loading All Commands Successfully !`));
         } catch (error) {
             console.error(error);
         }
@@ -69,22 +86,6 @@ class NekoTicket {
         this.client.once('ready', async () => {
             console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Logged in as ${this.client.user.tag}!`));
             await this.deployCommands();
-        });
-
-        // ทดสอบเท่านั้นไม่ได้นำมาใช้จริง
-        this.client.on('interactionCreate', async (interaction) => {
-            if (!interaction.isCommand()) return;
-
-            const command = this.client.commands.get(interaction.commandName);
-
-            if (!command) return;
-
-            try {
-                await command.execute(interaction);
-            } catch (error) {
-                console.error(error);
-                await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-            }
         });
     }
 
