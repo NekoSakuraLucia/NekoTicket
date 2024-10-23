@@ -1,3 +1,5 @@
+const handleTicketCreation = require("../separate/TicketCreation");
+
 module.exports = {
     name: "interactionCreate",
     async execute(interaction, client) {
@@ -15,6 +17,7 @@ module.exports = {
         } else if (interaction.isButton()) {
             switch (interaction.customId) {
                 case "confirm_ticket":
+                    await handleTicketCreation(interaction, client)
                     break;
                 case "cancel_ticket":
                     break;
