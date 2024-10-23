@@ -1,4 +1,4 @@
-const { ChannelType, PermissionsBitField } = require("discord.js");
+const { ChannelType, PermissionsBitField, EmbedBuilder } = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -19,7 +19,7 @@ module.exports = {
                 const existingTickets = interaction.guild.channels.cache.filter(channel => channel.name.startsWith("ticket-")).size;
                 const ticketNumber = String(existingTickets + 1).padStart(3, "0")
 
-                await interaction.guild.channels.create({
+                const ticketChannel = await interaction.guild.channels.create({
                     name: `ticket-${ticketNumber}`,
                     type: ChannelType.GuildText,
                     permissionOverwrites: [
@@ -43,6 +43,15 @@ module.exports = {
                         }
                     ]
                 });
+
+                const ticketEmbed = new EmbedBuilder()
+                    .setColor("LuminousVividPink")
+                    .setTitle(`Ticket-#${ticketNumber}`)
+                    .setDescription(`สวัสดี ${interaction.user}, กรุณาระบุปัญหาหรือข้อสงสัยของคุณในห้องนี้\n\n**โปรดระบุ:**\n- สาเหตุที่เปิด ticket\n- รายละเอียดปัญหา\n- ข้อมูลเพิ่มเติมที่เกี่ยวข้อง`)
+                    .setFooter({ text: 'ทีมงานจะตอบกลับให้เร็วที่สุด' })
+                    .setTimestamp();
+
+                await ticketChannel.send({ embeds: [ticketEmbed] })
 
                 await interaction.update({ content: `สร้าง ticket เรียบร้อยแล้ว: ticket-${ticketNumber}`, embeds: [], components: [] });
             }
