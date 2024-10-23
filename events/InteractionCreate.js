@@ -1,4 +1,11 @@
-const { ChannelType, PermissionsBitField, EmbedBuilder } = require("discord.js");
+const {
+    ChannelType,
+    PermissionsBitField,
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle
+} = require("discord.js");
 
 module.exports = {
     name: "interactionCreate",
@@ -51,9 +58,27 @@ module.exports = {
                     .setFooter({ text: 'ทีมงานจะตอบกลับให้เร็วที่สุด' })
                     .setTimestamp();
 
-                await ticketChannel.send({ embeds: [ticketEmbed] })
+                const closeTicketButton = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId("close_ticket")
+                            .setLabel("🔒 Close Ticket")
+                            .setStyle(ButtonStyle.Danger)
+                    );
+
+                await ticketChannel.send({ embeds: [ticketEmbed], components: [closeTicketButton] })
 
                 await interaction.update({ content: `สร้าง ticket เรียบร้อยแล้ว: ticket-${ticketNumber}`, embeds: [], components: [] });
+            } else if (interaction.customId === "close_ticket") {
+                if (interaction.channel.name.startsWith("ticket-")) {
+                    // ลบห้อง ticket
+                    await interaction.reply({ content: "ปิด ticket แล้ว..." });
+                    setTimeout(() => interaction.channel.delete(), 5000);
+                } else {
+                    await interaction.reply({ content: "ช่องนี้ไม่ใช่ช่องสำหรับ Ticket", ephemeral: true })
+                }
+            } else if (interaction.customId === "cancel_ticket") {
+                await interaction.update({ content: "การสร้าง ticket ถูกยกเลิกแล้ว", embeds: [], components: [] })
             }
         }
     }
