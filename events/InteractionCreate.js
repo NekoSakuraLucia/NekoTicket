@@ -1,3 +1,4 @@
+const handleTicketClose = require("../separate/TicketClose");
 const handleTicketCreation = require("../separate/TicketCreation");
 
 module.exports = {
@@ -17,11 +18,13 @@ module.exports = {
         } else if (interaction.isButton()) {
             switch (interaction.customId) {
                 case "confirm_ticket":
-                    await handleTicketCreation(interaction, client)
+                    await handleTicketCreation(interaction, client);
                     break;
                 case "cancel_ticket":
+                    await interaction.update({ content: "ยกเลิกการเปิด Ticket แล้ว!", components: [] });
                     break;
                 case "close_ticket":
+                    await handleTicketClose(interaction, client);
                     break;
             }
         }
