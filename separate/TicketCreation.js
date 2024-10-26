@@ -6,7 +6,7 @@ const {
     ButtonStyle,
     ButtonBuilder
 } = require("discord.js");
-const Ticket = require("../models/Ticket");
+const TicketModel = require("../models/TicketModel");
 
 async function handleTicketCreation(interaction, client) {
     const existingTickets = interaction.guild.channels.cache.filter(channel => channel.name.startsWith("ticket-")).size;
@@ -50,7 +50,7 @@ async function handleTicketCreation(interaction, client) {
     // ส่งข้อความในห้อง ticket ใหม่
     await ticketChannel.send({ embeds: [ticketEmbed], components: [closeTicketButton] });
 
-    const ticket = new Ticket({
+    const ticket = new TicketModel({
         userId: interaction.user.id,
         channelId: ticketChannel.id,
         ticketNumber: ticketNumber

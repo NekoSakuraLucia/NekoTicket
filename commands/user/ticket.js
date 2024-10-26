@@ -7,7 +7,7 @@ module.exports = {
 
         // สร้าง embed สำหรับคำสั่ง ticket
         const embed = new EmbedBuilder()
-        .setAuthor({ name: "NekoTicket", iconURL: interaction.user.displayAvatarURL() })
+            .setAuthor({ name: "NekoTicket", iconURL: interaction.user.displayAvatarURL() })
             .setColor("LuminousVividPink")
             .setTitle("Open Ticket !")
             .setDescription("Are you sure you want to open ticket? Please confirm below.");
@@ -23,7 +23,7 @@ module.exports = {
                     .setCustomId('cancel_ticket')
                     .setLabel('Cancel')
                     .setStyle(ButtonStyle.Secondary),
-        );
+            );
 
         await interaction.editReply({ embeds: [embed], components: [row] })
     }
