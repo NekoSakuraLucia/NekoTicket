@@ -1,11 +1,17 @@
 const { Client, GatewayIntentBits, REST, Routes, Collection } = require("discord.js");
 const path = require("path");
 const fs = require("fs");
-const { TOKEN } = require("./config.json");
+const { TOKEN, MONGODB_URI } = require("./config.json");
 const chalk = require("chalk");
+const mongoose = require("mongoose")
 
 class NekoTicket {
     constructor() {
+        mongoose.connect(MONGODB_URI).then(() => {
+            console.log(chalk.default.green(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('INFO')}] -> Connected to Mongodb`));
+        }).catch((err) => {
+            console.log(chalk.default.red(`[${chalk.default.white('NekoTicket')}] -> [${chalk.default.white('ERROR')}] -> MongoDB connection error:`, err));
+        })
         this.client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,
