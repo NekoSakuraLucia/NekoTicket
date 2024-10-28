@@ -1,7 +1,7 @@
 {
   "name": "nekoticket",
   "version": "0.0.1",
-  "description": "",
+  "description": "A Discord bot built using discord.js v14 that allows users to create support tickets with embedded confirmation buttons, manage issues, and close tickets via interactive commands.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
